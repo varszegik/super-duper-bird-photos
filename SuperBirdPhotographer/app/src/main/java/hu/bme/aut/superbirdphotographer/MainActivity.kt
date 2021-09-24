@@ -27,13 +27,17 @@ class MainActivity : ComponentActivity() {
     @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        setContent {
+//            Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
+//                CameraPermissionRequest(
+//                    navigateToSettingsScreen = {},
+//                    permissionGrantedComponent = { Text("Permission granteeed camera ready") })
+//            }
+//        }
         setContent {
-            Surface(color = Color.White, modifier = Modifier.fillMaxSize()) {
-                CameraPermissionRequest(
-                    navigateToSettingsScreen = {},
-                    permissionGrantedComponent = { Text("Permission granteeed camera ready") })
-            }
+            BirdPhotographerApp()
         }
+
     }
 
     @ExperimentalPermissionsApi
