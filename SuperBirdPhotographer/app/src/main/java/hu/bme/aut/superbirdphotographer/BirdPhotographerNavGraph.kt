@@ -1,7 +1,6 @@
 package hu.bme.aut.superbirdphotographer
 
 import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -10,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import hu.bme.aut.superbirdphotographer.home.Home
+import hu.bme.aut.superbirdphotographer.images.Images
+import hu.bme.aut.superbirdphotographer.settings.Settings
 import kotlinx.coroutines.launch
 
 object MainDestinations {
@@ -34,10 +35,10 @@ fun BirdPhotographerNavGraph(
             Home(openDrawer = openDrawer)
         }
         composable(MainDestinations.IMAGES_ROUTE){
-            Text("This is images")
+            Images(openDrawer = openDrawer)
         }
         composable(MainDestinations.SETTINGS_ROUTE){
-            Text("This is settings")
+            Settings(openDrawer = openDrawer)
         }
     }
 }
