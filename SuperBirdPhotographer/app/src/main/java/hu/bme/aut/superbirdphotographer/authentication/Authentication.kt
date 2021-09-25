@@ -15,17 +15,48 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.SignInButton
 import hu.bme.aut.superbirdphotographer.R
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import androidx.core.app.ActivityCompat.startActivityForResult
+
+import android.content.Intent
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.core.app.ActivityCompat
+import com.google.android.gms.common.api.ApiException
+
 
 @ExperimentalMaterialApi
 @Composable
 fun Authentication(
     navigateToHome: () -> Unit
 ) {
+    val signInRequestCode = 1
+    val context = LocalContext.current
+    val account = GoogleSignIn.getLastSignedInAccount(context)
+    if(account != null) {
+        return navigateToHome();
+    }
+    val authResultLauncher =
+        rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
+            try {
+                val gsa = task?.getResult(ApiException::class.java)
+                if (gsa != null ){
+                    navigateToHome()
+                }
+            } catch (e: ApiException) {
+            }
+        }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -42,17 +73,21 @@ fun Authentication(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            LoginButton()
+            LoginButton{
+                authResultLauncher.launch(signInRequestCode)
+            }
         }
     }
 }
 
 @ExperimentalMaterialApi
 @Composable
-fun LoginButton() {
+fun LoginButton(
+    action: () -> Unit
+) {
     var clicked by remember { mutableStateOf(false) }
     Surface(
-        onClick = { clicked = !clicked },
+        onClick = { clicked = !clicked; action() },
         elevation = 2.dp,
     ) {
         Row(
@@ -90,6 +125,7 @@ fun LoginButton() {
         }
     }
 }
+
 
 @ExperimentalMaterialApi
 @Preview

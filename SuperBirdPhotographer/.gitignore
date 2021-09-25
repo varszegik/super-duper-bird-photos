@@ -13,3 +13,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+app/debug/app-debug.aab
+app/src/main/java/hu/bme/aut/superbirdphotographer/private_key.pepk
