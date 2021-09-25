@@ -11,6 +11,7 @@ import hu.bme.aut.superbirdphotographer.ui.theme.SuperBirdPhotographerTheme
 import kotlinx.coroutines.launch
 
 
+@ExperimentalMaterialApi
 @Composable
 fun BirdPhotographerApp() {
     SuperBirdPhotographerTheme {
@@ -38,6 +39,7 @@ fun BirdPhotographerApp() {
     }
 }
 
+@ExperimentalMaterialApi
 @Composable
 @Preview
 fun BirdPhotographerAppPreview() {
