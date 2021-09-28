@@ -7,12 +7,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import hu.bme.aut.superbirdphotographer.ui.screens.navigation.BirdPhotographerNavGraph
 import hu.bme.aut.superbirdphotographer.ui.screens.navigation.MainDestinations
 import hu.bme.aut.superbirdphotographer.ui.theme.SuperBirdPhotographerTheme
 import kotlinx.coroutines.launch
 
 
+@ExperimentalPermissionsApi
 @ExperimentalMaterialApi
 @Composable
 fun BirdPhotographerApp() {
@@ -41,6 +43,7 @@ fun BirdPhotographerApp() {
     }
 }
 
+@ExperimentalPermissionsApi
 @ExperimentalMaterialApi
 @Composable
 @Preview

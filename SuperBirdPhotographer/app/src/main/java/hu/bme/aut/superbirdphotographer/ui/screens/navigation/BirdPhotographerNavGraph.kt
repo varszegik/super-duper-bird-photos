@@ -9,12 +9,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import hu.bme.aut.superbirdphotographer.authentication.Authentication
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import hu.bme.aut.superbirdphotographer.ui.screens.login.Authentication
 import hu.bme.aut.superbirdphotographer.ui.screens.home.Home
 import hu.bme.aut.superbirdphotographer.ui.screens.images.Images
 import hu.bme.aut.superbirdphotographer.ui.screens.settings.Settings
 import kotlinx.coroutines.launch
 
+@ExperimentalPermissionsApi
 @ExperimentalMaterialApi
 @Composable
 fun BirdPhotographerNavGraph(
