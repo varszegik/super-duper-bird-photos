@@ -1,6 +1,7 @@
 package hu.bme.aut.superbirdphotographer.ui.screens.home
 
 import android.Manifest
+import android.app.Activity
 import android.graphics.Color
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
@@ -28,6 +29,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.ui.graphics.toArgb
 
 @ExperimentalPermissionsApi
 @Composable
@@ -62,10 +64,11 @@ fun CameraView() {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+    val color = MaterialTheme.colors.surface.toArgb()
     AndroidView(
         factory = { context ->
             val previewView = PreviewView(context).apply {
-                setBackgroundColor(Color.GREEN)
+                setBackgroundColor(color)
                 layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
                 scaleType = PreviewView.ScaleType.FILL_START
                 implementationMode = PreviewView.ImplementationMode.COMPATIBLE
@@ -96,7 +99,11 @@ fun CameraView() {
 @ExperimentalPermissionsApi
 @Composable
 fun WithCameraPermission(permissionGrantedComponent: @Composable () -> Unit) {
+    val activity = (LocalContext.current as? Activity)
     CameraPermissionRequest(
+        onPermissionPermanentlyDenied = {
+            activity?.finish()
+        },
         navigateToSettingsScreen = {},
         permissionGrantedComponent = permissionGrantedComponent
     )
@@ -106,6 +113,7 @@ fun WithCameraPermission(permissionGrantedComponent: @Composable () -> Unit) {
 @Composable
 fun CameraPermissionRequest(
     navigateToSettingsScreen: () -> Unit,
+    onPermissionPermanentlyDenied: () -> Unit,
     permissionGrantedComponent: @Composable () -> Unit
 ) {
     var doNotShowRationale by rememberSaveable { mutableStateOf(false) }
@@ -120,20 +128,20 @@ fun CameraPermissionRequest(
         cameraPermissionState.shouldShowRationale ||
                 !cameraPermissionState.permissionRequested -> {
             if (doNotShowRationale) {
-                Text("Feature not available")
+                onPermissionPermanentlyDenied()
             } else {
                 AlertDialog(
                     onDismissRequest = {},
                     title = { Text("Permission required") },
-                    text = { Text("We need your camera pls") },
+                    text = { Text("In order to take photos of the beautiful birds in sight, we need to access your device's camera.") },
                     confirmButton = {
                         Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
-                            Text("Request permission")
+                            Text("OK")
                         }
                     },
                     dismissButton = {
                         Button(onClick = { doNotShowRationale = true }) {
-                            Text("Don't show rationale again")
+                            Text("No, don't ask again")
                         }
                     }
                 )
