@@ -1,4 +1,4 @@
-package hu.bme.aut.superbirdphotographer
+package hu.bme.aut.superbirdphotographer.ui.screens.navigation
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScaffoldState
@@ -10,17 +10,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import hu.bme.aut.superbirdphotographer.authentication.Authentication
-import hu.bme.aut.superbirdphotographer.home.Home
-import hu.bme.aut.superbirdphotographer.images.Images
-import hu.bme.aut.superbirdphotographer.settings.Settings
+import hu.bme.aut.superbirdphotographer.ui.screens.home.Home
+import hu.bme.aut.superbirdphotographer.ui.screens.images.Images
+import hu.bme.aut.superbirdphotographer.ui.screens.settings.Settings
 import kotlinx.coroutines.launch
-
-object MainDestinations {
-  const val HOME_ROUTE = "home"
-  const val AUTHENTICATION = "authentication"
-  const val IMAGES_ROUTE = "images"
-  const val SETTINGS_ROUTE = "settings"
-}
 
 @ExperimentalMaterialApi
 @Composable

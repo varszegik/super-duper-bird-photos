@@ -1,4 +1,4 @@
-package hu.bme.aut.superbirdphotographer
+package hu.bme.aut.superbirdphotographer.ui.screens.components
 
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -7,6 +7,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import hu.bme.aut.superbirdphotographer.ui.screens.navigation.BirdPhotographerNavGraph
+import hu.bme.aut.superbirdphotographer.ui.screens.navigation.MainDestinations
 import hu.bme.aut.superbirdphotographer.ui.theme.SuperBirdPhotographerTheme
 import kotlinx.coroutines.launch
 

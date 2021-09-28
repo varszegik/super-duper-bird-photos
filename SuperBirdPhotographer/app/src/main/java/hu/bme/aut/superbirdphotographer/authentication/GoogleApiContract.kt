@@ -10,12 +10,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
 import com.google.android.gms.tasks.Task
-import com.google.api.services.drive.DriveScopes
 
 class GoogleApiContract: ActivityResultContract<Int, Task<GoogleSignInAccount>?>() {
     override fun createIntent(context: Context, input: Int?): Intent {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("TODO ")
+            .requestIdToken("312639196088-0g4mphns7kqpe1s7i9p5kbn3pqf583s5.apps.googleusercontent.com")
             .requestScopes(Scope(Scopes.DRIVE_FILE))
             .requestEmail()
             .build()

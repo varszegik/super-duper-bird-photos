@@ -1,4 +1,4 @@
-package hu.bme.aut.superbirdphotographer.images
+package hu.bme.aut.superbirdphotographer.ui.screens.images
 
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
