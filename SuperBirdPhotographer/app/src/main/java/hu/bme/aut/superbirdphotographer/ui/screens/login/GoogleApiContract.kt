@@ -1,4 +1,4 @@
-package hu.bme.aut.superbirdphotographer.authentication
+package hu.bme.aut.superbirdphotographer.ui.screens.login
 
 import android.app.Activity
 import android.content.Context

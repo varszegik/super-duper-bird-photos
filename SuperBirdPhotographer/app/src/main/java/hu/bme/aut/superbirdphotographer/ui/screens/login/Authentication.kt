@@ -19,7 +19,6 @@ import hu.bme.aut.superbirdphotographer.R
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.common.api.ApiException
-import hu.bme.aut.superbirdphotographer.authentication.GoogleApiContract
 
 
 @ExperimentalMaterialApi
