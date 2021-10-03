@@ -16,9 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import dagger.hilt.android.AndroidEntryPoint
 import hu.bme.aut.superbirdphotographer.ui.screens.components.BirdPhotographerApp
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @ExperimentalMaterialApi
     @ExperimentalPermissionsApi

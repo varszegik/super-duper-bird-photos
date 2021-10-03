@@ -2,17 +2,20 @@ package hu.bme.aut.superbirdphotographer.ui.screens.home
 
 import android.Manifest
 import android.app.Activity
-import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
+import android.graphics.RectF
+import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.camera.core.Preview
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -24,17 +27,30 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.drawscope.withTransform
+import java.lang.Math.abs
+import android.util.Size as DetectionSize
+
 
 @ExperimentalPermissionsApi
 @Composable
 fun Home(
-    viewModel: HomeViewModel = viewModel(),
+    viewModel: HomeViewModel,
     openDrawer: () -> Unit
 ) {
     Scaffold(
@@ -54,13 +70,41 @@ fun Home(
         )
     {
         WithCameraPermission {
-            CameraView()
+            CameraView(viewModel.imageAnalyzer)
+            val objectRect: Rect? by viewModel.imageRect.observeAsState()
+            ObjectRectangle(objectRect)
         }
     }
 }
 
 @Composable
-fun CameraView() {
+fun ObjectRectangle(rect: Rect?) {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        if (rect == null) return@Canvas
+        Log.d("rect", "${rect.top}, ${rect.left}, ${rect.bottom}, ${rect.right}")
+        val topOffset = (rect.top / 1080f) * size.height
+        val leftOffset = (rect.left / 1080f) * size.width
+        val right = (rect.right / 1080f) * size.width
+        val bottom = (rect.bottom / 1080f) * size.height
+            translate(left = leftOffset, top = topOffset){
+                drawRect(
+                    color = Color.Green,
+                    style = Stroke(width = 8f),
+                    size = Size(
+                        kotlin.math.abs(right - leftOffset),
+                        kotlin.math.abs(bottom - topOffset)
+                    ),
+                )
+            }
+
+    }
+}
+
+
+@Composable
+fun CameraView(
+    analyser: ImageAnalysis.Analyzer
+) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -83,11 +127,18 @@ fun CameraView() {
                     .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                     .build()
 
+                val imageAnalysis = ImageAnalysis.Builder()
+                    .setTargetResolution(DetectionSize(480, 360))
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(context), analyser)
+
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
                     lifecycleOwner,
                     cameraSelector,
-                    preview
+                    preview,
+                    imageAnalysis
                 )
             }, ContextCompat.getMainExecutor(context))
             previewView

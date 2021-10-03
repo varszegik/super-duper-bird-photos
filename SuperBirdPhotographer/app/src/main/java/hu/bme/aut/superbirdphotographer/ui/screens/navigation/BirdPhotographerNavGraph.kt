@@ -12,9 +12,11 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import hu.bme.aut.superbirdphotographer.ui.screens.login.Authentication
 import hu.bme.aut.superbirdphotographer.ui.screens.home.Home
+import hu.bme.aut.superbirdphotographer.ui.screens.home.HomeViewModel
 import hu.bme.aut.superbirdphotographer.ui.screens.images.Images
 import hu.bme.aut.superbirdphotographer.ui.screens.settings.Settings
 import kotlinx.coroutines.launch
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @ExperimentalPermissionsApi
 @ExperimentalMaterialApi
@@ -37,7 +39,7 @@ fun BirdPhotographerNavGraph(
       })
     }
     composable(MainDestinations.HOME_ROUTE) {
-      Home(openDrawer = openDrawer)
+      Home(openDrawer = openDrawer, viewModel = hiltViewModel())
     }
     composable(MainDestinations.IMAGES_ROUTE) {
       Images(openDrawer = openDrawer)
