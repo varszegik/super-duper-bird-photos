@@ -10,4 +10,6 @@ import dagger.hilt.components.SingletonComponent
 
 interface BirdInfoScreen {
     val imageRect: MutableLiveData<Rect?>
+
+    fun takePicture()
 }

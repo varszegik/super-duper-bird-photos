@@ -2,19 +2,18 @@ package hu.bme.aut.superbirdphotographer.ui.screens.home
 
 import android.Manifest
 import android.app.Activity
-import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.RectF
+import android.os.Environment
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.camera.core.Preview
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -31,19 +30,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.drawscope.withTransform
-import java.lang.Math.abs
 import android.util.Size as DetectionSize
 
 
@@ -53,6 +46,9 @@ fun Home(
     viewModel: HomeViewModel,
     openDrawer: () -> Unit
 ) {
+    val context = LocalContext.current
+    viewModel.outputFolder =
+        context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: context.filesDir
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,9 +66,12 @@ fun Home(
         )
     {
         WithCameraPermission {
-            CameraView(viewModel.imageAnalyzer)
+            CameraView(viewModel.imageAnalyzer, viewModel.imageCapture)
             val objectRect: Rect? by viewModel.imageRect.observeAsState()
             ObjectRectangle(objectRect)
+            IconButton(onClick = { viewModel.takePicture() }) {
+                Icon(Icons.Filled.Menu, "menu")
+            }
         }
     }
 }
@@ -103,7 +102,8 @@ fun ObjectRectangle(rect: Rect?) {
 
 @Composable
 fun CameraView(
-    analyser: ImageAnalysis.Analyzer
+    analyser: ImageAnalysis.Analyzer,
+    imageCapture: ImageCapture
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
@@ -133,12 +133,15 @@ fun CameraView(
                     .build()
                 imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(context), analyser)
 
+
+
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
                     lifecycleOwner,
                     cameraSelector,
                     preview,
-                    imageAnalysis
+                    imageAnalysis,
+                    imageCapture
                 )
             }, ContextCompat.getMainExecutor(context))
             previewView

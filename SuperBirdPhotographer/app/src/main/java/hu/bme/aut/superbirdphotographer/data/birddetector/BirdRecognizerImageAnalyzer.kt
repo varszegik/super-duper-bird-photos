@@ -40,14 +40,14 @@ class BirdRecognizerImageAnalyzer @Inject constructor(private val birdInfoScreen
                     birdInfoScreen.imageRect.value = null
                     for (detectedObject in results) {
                         val boundingBox = detectedObject.boundingBox
-                        val trackingId = detectedObject.trackingId
-                        birdInfoScreen.imageRect.value = boundingBox
-                        for (label in detectedObject.labels) {
+                        val label = detectedObject.labels.firstOrNull()
+                        if(label != null && label.text != "None"){
+                            birdInfoScreen.imageRect.value = boundingBox
+                            birdInfoScreen.takePicture()
                             val text = label.text
-                            val index = label.index
-                            val confidence = label.confidence
                             Log.d("results", text)
                         }
+
                     }
                 }
                 .addOnFailureListener { e ->
