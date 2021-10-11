@@ -1,5 +1,6 @@
 package hu.bme.aut.superbirdphotographer.ui.screens.navigation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
@@ -18,6 +19,7 @@ import hu.bme.aut.superbirdphotographer.ui.screens.settings.Settings
 import kotlinx.coroutines.launch
 import androidx.hilt.navigation.compose.hiltViewModel
 
+@ExperimentalFoundationApi
 @ExperimentalPermissionsApi
 @ExperimentalMaterialApi
 @Composable
@@ -42,7 +44,7 @@ fun BirdPhotographerNavGraph(
       Home(openDrawer = openDrawer, viewModel = hiltViewModel())
     }
     composable(MainDestinations.IMAGES_ROUTE) {
-      Images(openDrawer = openDrawer)
+      Images(openDrawer = openDrawer, viewModel = hiltViewModel())
     }
     composable(MainDestinations.SETTINGS_ROUTE) {
       Settings(openDrawer = openDrawer)

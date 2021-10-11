@@ -1,5 +1,6 @@
 package hu.bme.aut.superbirdphotographer.ui.screens.home
 
+import android.app.Application
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.graphics.Rect
@@ -21,9 +22,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.bme.aut.superbirdphotographer.data.birddetector.BirdInfoScreen
 import hu.bme.aut.superbirdphotographer.data.birddetector.BirdRecognizerImageAnalyzer
+import hu.bme.aut.superbirdphotographer.data.local.ImagesRepository
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
@@ -41,6 +44,7 @@ class HomeViewModel @Inject constructor(
     private var capturing = false
     val imageAnalyzer: BirdRecognizerImageAnalyzer = BirdRecognizerImageAnalyzer(this)
 
+
     @Provides
     fun provideSelf(): BirdInfoScreen {
         return this;
@@ -56,6 +60,8 @@ class HomeViewModel @Inject constructor(
 
     val imageCapture: ImageCapture =
         ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY).build()
+
+
 
 
     override fun takePicture() {

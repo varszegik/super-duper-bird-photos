@@ -1,5 +1,6 @@
 package hu.bme.aut.superbirdphotographer.ui.screens.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,6 +15,7 @@ import hu.bme.aut.superbirdphotographer.ui.theme.SuperBirdPhotographerTheme
 import kotlinx.coroutines.launch
 
 
+@ExperimentalFoundationApi
 @ExperimentalPermissionsApi
 @ExperimentalMaterialApi
 @Composable
@@ -43,6 +45,7 @@ fun BirdPhotographerApp() {
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalPermissionsApi
 @ExperimentalMaterialApi
 @Composable

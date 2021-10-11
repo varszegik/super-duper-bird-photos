@@ -3,6 +3,7 @@ package hu.bme.aut.superbirdphotographer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -21,6 +22,7 @@ import hu.bme.aut.superbirdphotographer.ui.screens.components.BirdPhotographerAp
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
