@@ -1,7 +1,12 @@
 package hu.bme.aut.superbirdphotographer.ui.screens.home
 
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.provider.Telephony.Mms.Part.FILENAME
 import android.util.Log
 import androidx.camera.core.ImageCapture
@@ -35,18 +40,22 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel(), BirdInfoScreen {
     private var capturing = false
     val imageAnalyzer: BirdRecognizerImageAnalyzer = BirdRecognizerImageAnalyzer(this)
+
     @Provides
     fun provideSelf(): BirdInfoScreen {
         return this;
     }
+
     var captureFileUri by mutableStateOf<Uri?>(null)
         private set
     lateinit var outputFolder: File
+    lateinit var contentResolver: ContentResolver
 
 
     override val imageRect: MutableLiveData<Rect?> by lazy { MutableLiveData<Rect?>() }
 
-    val imageCapture: ImageCapture = ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY).build()
+    val imageCapture: ImageCapture =
+        ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY).build()
 
 
     override fun takePicture() {
@@ -64,17 +73,25 @@ class HomeViewModel @Inject constructor(
     }
 
     fun capture() {
-        val photoFile = createFile(outputFolder, FILENAME, PHOTO_EXTENSION)
+        val newImageDetails = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, generateFileName(FILENAME, PHOTO_EXTENSION))
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + '/' + IMAGES_SUBDIRECTORY)
+            }
+        }
 
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile)
-            .build()
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(
+            contentResolver,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            newImageDetails
+        ).build()
 
         imageCapture.takePicture(outputOptions, Executors.newSingleThreadExecutor(),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    captureFileUri = output.savedUri ?: Uri.fromFile(photoFile)
-                    Log.d(TAG, "Photo capture succeeded: $captureFileUri")
+                    Log.d(TAG, "Photo capture succeeded")
                 }
+
                 override fun onError(exception: ImageCaptureException) {
                     Log.e(TAG, "Photo capture exception: $exception")
                 }
@@ -85,12 +102,13 @@ class HomeViewModel @Inject constructor(
         private const val TAG = "HomeViewModel"
         private const val FILENAME = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val PHOTO_EXTENSION = ".jpg"
+        private const val IMAGES_SUBDIRECTORY = "BirdPhotography"
 
-        private fun createFile(baseFolder: File, format: String, extension: String) =
-            File(
-                baseFolder, SimpleDateFormat(format, Locale.GERMAN)
-                    .format(System.currentTimeMillis()) + extension
-            )
+
+        private fun generateFileName(format: String, extension: String): String {
+            return SimpleDateFormat(format, Locale.GERMAN)
+                .format(System.currentTimeMillis()) + extension
+        }
 
     }
 

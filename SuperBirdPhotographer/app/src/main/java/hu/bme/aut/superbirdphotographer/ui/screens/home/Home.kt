@@ -30,6 +30,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.runtime.getValue
@@ -49,6 +50,7 @@ fun Home(
     val context = LocalContext.current
     viewModel.outputFolder =
         context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: context.filesDir
+    viewModel.contentResolver = context.contentResolver
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,7 +72,7 @@ fun Home(
             val objectRect: Rect? by viewModel.imageRect.observeAsState()
             ObjectRectangle(objectRect)
             IconButton(onClick = { viewModel.takePicture() }) {
-                Icon(Icons.Filled.Menu, "menu")
+                Icon(Icons.Filled.Add, "capture")
             }
         }
     }
