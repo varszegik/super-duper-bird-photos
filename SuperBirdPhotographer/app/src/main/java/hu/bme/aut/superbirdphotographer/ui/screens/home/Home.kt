@@ -35,9 +35,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import hu.bme.aut.superbirdphotographer.R
 import hu.bme.aut.superbirdphotographer.data.cloud.GoogleDriveRepository
 import android.util.Size as DetectionSize
 
@@ -73,8 +79,10 @@ fun Home(
             CameraView(viewModel.imageAnalyzer, viewModel.imageCapture)
             val objectRect: Rect? by viewModel.imageRect.observeAsState()
             ObjectRectangle(objectRect)
-            IconButton(onClick = { viewModel.takePicture() }) {
-                Icon(Icons.Filled.Add, "capture")
+            Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+                IconButton(onClick = { viewModel.takePicture("Manual capture") }) {
+                    Icon(painterResource(R.drawable.ic_shutter), "capture")
+                }
             }
         }
     }

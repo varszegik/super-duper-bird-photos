@@ -1,3 +1,11 @@
+# 6. hét
+
+### 2021.10.17
+
+A héten a fájlok feltöltésével foglalkoztam a Google Drive-ba. Ennek úgy indultam neki, hogy a Drive kommunikáció lesz a legnehezebb, azonban arra a részére körülbelül 1 óra alatt researchöléssel és kódolással együtt volt egy működő Repository függvényem. A nehézségek ott kezdődtek, amikor az ImageCapture által mentett fájlt File osztályba csomagolva szerettem volna visszakapni. Ehhez az összes Stackoverflow postot elolvasva sem volt túl sok ötletem. Az onSuccess listener output-jába csomagolt uri egyszerűen konvertálható a toUri() függvényével Uri-vá, viszont ez nem működött, ugyanis érvénytelennek találta a visszakapott Urit. A getRealPathFromURI függvény a contentResolveren keresztül visszaolvassa a kiírt fájlt, így már világossá válik az igazi Uri, és az alapján már könnyedén létre lehet hozni a File-t.
+
+Ezek után a csoportosítással kezdtem foglalkozni, sajnos megállapítottam, hogy a Title és Description kiírások nem kódolódnak bele a file-ba, a MediaStore valamiért nem csinálja meg, csak figyelmeztet, hogy Android 11 alatt már ignorálja. Így visszaolvasáskor a Title maga a file neve lett, a Description pedig null. Ezért a madár típusát a fájlnév elejébe, \_ -al elválasztva kódolom bele, ami már korábban is terv volt, hogy a fájlnév is tükrözze a fajtát. Így a fájlok közötti eligazodás is könnyebb, illetve ez alapján csoportosíthatóak az észlelések
+
 # 5. hét
 
 ### 2021.10.10

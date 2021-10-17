@@ -43,7 +43,7 @@ class BirdRecognizerImageAnalyzer @Inject constructor(private val birdInfoScreen
                         val label = detectedObject.labels.firstOrNull()
                         if(label != null && label.text != "None"){
                             birdInfoScreen.imageRect.value = boundingBox
-                            birdInfoScreen.takePicture()
+                            birdInfoScreen.takePicture(label.text)
                             val text = label.text
                             Log.d("results", text)
                         }

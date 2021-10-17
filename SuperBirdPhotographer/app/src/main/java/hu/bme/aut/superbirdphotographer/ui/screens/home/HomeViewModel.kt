@@ -50,8 +50,6 @@ class HomeViewModel @Inject constructor(
         return this;
     }
 
-    var captureFilePath by mutableStateOf<String?>(null)
-        private set
     lateinit var outputFolder: File
     lateinit var contentResolver: ContentResolver
 
@@ -62,24 +60,21 @@ class HomeViewModel @Inject constructor(
         ImageCapture.Builder().setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY).build()
 
 
-    override fun takePicture() {
+    override fun takePicture(label: String) {
         runBlocking {
             if (!capturing) {
                 capturing = true
                 CoroutineScope(Dispatchers.IO).launch {
                     delay(5000L)
                     capturing = false
-                    captureFilePath = null
                 }
-                capture()
+                capture(label)
             }
         }
     }
 
-    fun capture() {
-        val fileName = generateFileName(FILENAME, PHOTO_EXTENSION)
-        captureFilePath =
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI.path + File.separator + IMAGES_SUBDIRECTORY + File.separator + fileName
+    fun capture(label: String) {
+        val fileName = label + "_" + generateFileName(FILENAME, PHOTO_EXTENSION)
         val newImageDetails = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
