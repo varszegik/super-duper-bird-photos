@@ -17,6 +17,7 @@ class ImagesViewModel @Inject constructor() : ViewModel() {
     private val imagesRepository = ImagesRepository()
 
 
+
     fun listImages(contentResolver: ContentResolver): MutableList<MediaStoreImage> {
         return imagesRepository.getLocalImages(contentResolver)
     }
