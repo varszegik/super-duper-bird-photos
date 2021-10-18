@@ -4,6 +4,8 @@
 
 A mai napon a csoportosítással foglalkoztam. A LazyColumn nagyon jó API-t provide-ol sticky headerek létrehozására, viszont a LazyVerticalGrid nem, így attól megszabadultam, és inkább kiírtam a sorokba a madarak nevét. Így 1 kép/sor látható, de névvel együtt, és időpontra csoportosítva, jelenleg 5 percenként-re
 
+Megcsináltam a képek teljes méretben megnyitása funkcionalitást is, itt csak a navigáció közötti paraméter átadás volt problémás, de azon túllendülve könnyedén ment.
+
 ### 2021.10.17
 
 A héten a fájlok feltöltésével foglalkoztam a Google Drive-ba. Ennek úgy indultam neki, hogy a Drive kommunikáció lesz a legnehezebb, azonban arra a részére körülbelül 1 óra alatt researchöléssel és kódolással együtt volt egy működő Repository függvényem. A nehézségek ott kezdődtek, amikor az ImageCapture által mentett fájlt File osztályba csomagolva szerettem volna visszakapni. Ehhez az összes Stackoverflow postot elolvasva sem volt túl sok ötletem. Az onSuccess listener output-jába csomagolt uri egyszerűen konvertálható a toUri() függvényével Uri-vá, viszont ez nem működött, ugyanis érvénytelennek találta a visszakapott Urit. A getRealPathFromURI függvény a contentResolveren keresztül visszaolvassa a kiírt fájlt, így már világossá válik az igazi Uri, és az alapján már könnyedén létre lehet hozni a File-t.

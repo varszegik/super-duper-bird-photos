@@ -6,4 +6,6 @@ object MainDestinations {
   const val AUTHENTICATION = "authentication"
   const val IMAGES_ROUTE = "images"
   const val SETTINGS_ROUTE = "settings"
+  const val IMAGE_ROUTE = "image"
+  const val IMAGE_URI = "imageUri"
 }

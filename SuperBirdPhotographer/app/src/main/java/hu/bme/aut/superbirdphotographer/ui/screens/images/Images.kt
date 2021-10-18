@@ -6,6 +6,7 @@ import android.util.Size
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,12 +24,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import hu.bme.aut.superbirdphotographer.data.local.MediaStoreImage
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.*
 
 @ExperimentalFoundationApi
 @Composable
-fun Images(viewModel: ImagesViewModel, openDrawer: () -> Unit) {
+fun Images(
+    viewModel: ImagesViewModel,
+    openDrawer: () -> Unit,
+    navigateToImageScreen: (imageUri: String?) -> Unit
+) {
     val context = LocalContext.current
     val images = viewModel.listImages(context.contentResolver)
     Scaffold(
@@ -57,7 +64,7 @@ fun Images(viewModel: ImagesViewModel, openDrawer: () -> Unit) {
                             .background(MaterialTheme.colors.surface),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(SimpleDateFormat("yyyy.MM.dd hh:mm",Locale.GERMAN).format(date))
+                        Text(SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.GERMAN).format(date))
                     }
                 }
                 items(list) { image ->
@@ -70,10 +77,12 @@ fun Images(viewModel: ImagesViewModel, openDrawer: () -> Unit) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(0.dp, 10.dp),
+                                .padding(0.dp, 10.dp)
+                                .clickable { navigateToImageScreen(URLEncoder.encode(image.contentUri.toString(), StandardCharsets.UTF_8.toString())) },
                             horizontalArrangement = Arrangement.Start,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                            verticalAlignment = Alignment.CenterVertically,
+
+                            ) {
                             Image(
                                 BitmapPainter(thumbnail.asImageBitmap()),
                                 "image",

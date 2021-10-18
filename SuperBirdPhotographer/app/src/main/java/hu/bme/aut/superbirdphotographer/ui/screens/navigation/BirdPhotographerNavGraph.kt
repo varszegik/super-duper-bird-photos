@@ -18,36 +18,50 @@ import hu.bme.aut.superbirdphotographer.ui.screens.images.Images
 import hu.bme.aut.superbirdphotographer.ui.screens.settings.Settings
 import kotlinx.coroutines.launch
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import hu.bme.aut.superbirdphotographer.ui.screens.image.ImageScreen
 
 @ExperimentalFoundationApi
 @ExperimentalPermissionsApi
 @ExperimentalMaterialApi
 @Composable
 fun BirdPhotographerNavGraph(
-  navController: NavHostController = rememberNavController(),
-  scaffoldState: ScaffoldState = rememberScaffoldState(),
-  startDestination: String = MainDestinations.AUTHENTICATION
+    navController: NavHostController = rememberNavController(),
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    startDestination: String = MainDestinations.AUTHENTICATION
 ) {
 
-  val coroutineScope = rememberCoroutineScope()
-  val openDrawer: () -> Unit = { coroutineScope.launch { scaffoldState.drawerState.open() } }
+    val coroutineScope = rememberCoroutineScope()
+    val openDrawer: () -> Unit = { coroutineScope.launch { scaffoldState.drawerState.open() } }
 
-  NavHost(navController = navController, startDestination = startDestination) {
-    composable(MainDestinations.AUTHENTICATION) {
-      Authentication(navigateToHome = {
-        navController.navigate(MainDestinations.HOME_ROUTE) {
-          popUpTo(0)
+    NavHost(navController = navController, startDestination = startDestination) {
+        composable(MainDestinations.AUTHENTICATION) {
+            Authentication(navigateToHome = {
+                navController.navigate(MainDestinations.HOME_ROUTE) {
+                    popUpTo(0)
+                }
+            })
         }
-      })
+        composable(MainDestinations.HOME_ROUTE) {
+            Home(openDrawer = openDrawer, viewModel = hiltViewModel())
+        }
+        composable(MainDestinations.IMAGES_ROUTE) {
+            Images(openDrawer = openDrawer, viewModel = hiltViewModel(), navigateToImageScreen = {
+                navController.navigate("${MainDestinations.IMAGE_ROUTE}/${it}")
+            })
+        }
+        composable(MainDestinations.SETTINGS_ROUTE) {
+            Settings(openDrawer = openDrawer)
+        }
+        composable("${MainDestinations.IMAGE_ROUTE}/{${MainDestinations.IMAGE_URI}}",
+            arguments = listOf(navArgument(MainDestinations.IMAGE_URI) {
+                type = NavType.StringType
+            })
+        ) {
+            val arg = requireNotNull(it.arguments)
+            val imageUri = arg.getString(MainDestinations.IMAGE_URI)
+            ImageScreen(imageUri ?: "")
+        }
     }
-    composable(MainDestinations.HOME_ROUTE) {
-      Home(openDrawer = openDrawer, viewModel = hiltViewModel())
-    }
-    composable(MainDestinations.IMAGES_ROUTE) {
-      Images(openDrawer = openDrawer, viewModel = hiltViewModel())
-    }
-    composable(MainDestinations.SETTINGS_ROUTE) {
-      Settings(openDrawer = openDrawer)
-    }
-  }
 }
