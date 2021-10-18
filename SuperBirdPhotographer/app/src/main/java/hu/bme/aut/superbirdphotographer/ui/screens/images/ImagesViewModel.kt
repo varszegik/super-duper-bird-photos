@@ -19,7 +19,7 @@ class ImagesViewModel @Inject constructor() : ViewModel() {
 
 
     fun listImages(contentResolver: ContentResolver): Map<Date?, List<MediaStoreImage>> {
-        val images = imagesRepository.getLocalImages(contentResolver)
+        val images = imagesRepository.getLocalImages(contentResolver).asReversed()
         val grouppedImages = images.groupBy { normalizeDate(it.date) }
         return grouppedImages
     }
