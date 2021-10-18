@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import hu.bme.aut.superbirdphotographer.data.local.MediaStoreImage
+import java.text.SimpleDateFormat
 import java.util.*
 
 @ExperimentalFoundationApi
@@ -52,10 +53,11 @@ fun Images(viewModel: ImagesViewModel, openDrawer: () -> Unit) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(0.dp).background(MaterialTheme.colors.surface),
+                            .padding(0.dp)
+                            .background(MaterialTheme.colors.surface),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(date.toString())
+                        Text(SimpleDateFormat("yyyy.MM.dd hh:mm",Locale.GERMAN).format(date))
                     }
                 }
                 items(list) { image ->
@@ -68,7 +70,7 @@ fun Images(viewModel: ImagesViewModel, openDrawer: () -> Unit) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(0.dp, 0.dp, 0.dp, 0.dp),
+                                .padding(0.dp, 10.dp),
                             horizontalArrangement = Arrangement.Start,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -83,6 +85,7 @@ fun Images(viewModel: ImagesViewModel, openDrawer: () -> Unit) {
                             )
                             image.species?.let { it1 -> Text(it1) }
                         }
+
                     }
                 }
             }
