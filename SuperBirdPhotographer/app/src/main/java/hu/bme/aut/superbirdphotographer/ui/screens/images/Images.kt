@@ -1,13 +1,12 @@
 package hu.bme.aut.superbirdphotographer.ui.screens.images
 
+import android.content.Context
 import android.os.Build
 import android.util.Size
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -16,12 +15,15 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import hu.bme.aut.superbirdphotographer.data.local.MediaStoreImage
+import java.util.*
 
 @ExperimentalFoundationApi
 @Composable
@@ -44,13 +46,68 @@ fun Images(viewModel: ImagesViewModel, openDrawer: () -> Unit) {
 
         )
     {
-        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 128.dp)) {
-            items(images) { image ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    val thumbnail = context.contentResolver.loadThumbnail(image.contentUri, Size(320, 320), null)
-
-                    Image(BitmapPainter(thumbnail.asImageBitmap()), "image", modifier = Modifier.width(128.dp).height(128.dp).padding(5.dp), contentScale = ContentScale.Crop)
+        LazyColumn(modifier = Modifier.fillMaxSize(), content = {
+            images.forEach { (date, list) ->
+                stickyHeader {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(0.dp).background(MaterialTheme.colors.surface),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(date.toString())
+                    }
                 }
+                items(list) { image ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        val thumbnail = context.contentResolver.loadThumbnail(
+                            image.contentUri,
+                            Size(320, 320),
+                            null
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(0.dp, 0.dp, 0.dp, 0.dp),
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                BitmapPainter(thumbnail.asImageBitmap()),
+                                "image",
+                                modifier = Modifier
+                                    .width(128.dp)
+                                    .height(128.dp)
+                                    .padding(5.dp, 0.dp, 30.dp, 0.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                            image.species?.let { it1 -> Text(it1) }
+                        }
+                    }
+                }
+            }
+
+
+        })
+
+    }
+}
+
+@ExperimentalFoundationApi
+@Composable
+fun DetectionGroup(context: Context, date: Date?, images: List<MediaStoreImage>) {
+    LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 128.dp)) {
+        items(images) { image ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val thumbnail =
+                    context.contentResolver.loadThumbnail(image.contentUri, Size(320, 320), null)
+
+                Image(
+                    BitmapPainter(thumbnail.asImageBitmap()), "image", modifier = Modifier
+                        .width(128.dp)
+                        .height(128.dp)
+                        .padding(5.dp), contentScale = ContentScale.Crop
+                )
             }
         }
     }

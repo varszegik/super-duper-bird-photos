@@ -2,6 +2,7 @@ package hu.bme.aut.superbirdphotographer.data.local
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -9,6 +10,7 @@ import android.provider.MediaStore.Images.Media.query
 import android.provider.MediaStore.Images.Thumbnails.query
 import android.provider.MediaStore.Video.query
 import androidx.recyclerview.widget.DiffUtil
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -17,7 +19,7 @@ data class MediaStoreImage(
     val displayName: String,
     val contentUri: Uri,
     val species: String?,
-    val date: String?
+    val date: Date?
 ) {
     companion object {
         val DiffCallback = object : DiffUtil.ItemCallback<MediaStoreImage>() {
@@ -63,7 +65,9 @@ class ImagesRepository {
                 )
                 val title = cursor.getString(titleColumn)
                 val infos = title.split("_")
-                val image = MediaStoreImage(id, displayName, contentUri, infos.getOrNull(0), infos.getOrNull(1))
+                val species =  infos.getOrNull(0)
+                val dateString = infos.getOrNull(1)
+                val image = MediaStoreImage(id, displayName, contentUri,species, parseFileNameDate(FILENAME, dateString))
 
                 images += image
             }
@@ -72,6 +76,36 @@ class ImagesRepository {
         return images
 
 
+    }
+
+    fun getRealPathFromURI(contentResolver: ContentResolver, contentURI: Uri): String? {
+        val result: String?
+        val cursor: Cursor? = contentResolver.query(contentURI, null, null, null, null)
+        if (cursor == null) {
+            result = contentURI.path
+        } else {
+            cursor.moveToFirst()
+            val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+            result = cursor.getString(idx)
+            cursor.close()
+        }
+        return result
+    }
+
+    companion object {
+        const val FILENAME = "yyyy-MM-dd-HH-mm-ss-SSS"
+        const val PHOTO_EXTENSION = ".jpg"
+        const val IMAGES_SUBDIRECTORY = "BirdPhotography"
+
+
+        fun generateFileName(format: String, extension: String): String {
+            return SimpleDateFormat(format, Locale.GERMAN)
+                .format(System.currentTimeMillis()) + extension
+        }
+
+        fun parseFileNameDate(format: String, source: String?): Date? {
+            return SimpleDateFormat(format, Locale.GERMAN).parse(source)
+        }
     }
 
 }

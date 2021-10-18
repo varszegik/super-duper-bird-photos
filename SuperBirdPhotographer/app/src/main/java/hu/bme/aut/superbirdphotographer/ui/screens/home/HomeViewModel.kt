@@ -26,6 +26,7 @@ import hu.bme.aut.superbirdphotographer.data.birddetector.BirdInfoScreen
 import hu.bme.aut.superbirdphotographer.data.birddetector.BirdRecognizerImageAnalyzer
 import hu.bme.aut.superbirdphotographer.data.cloud.CloudImagesRepository
 import hu.bme.aut.superbirdphotographer.data.cloud.GoogleDriveRepository
+import hu.bme.aut.superbirdphotographer.data.local.ImagesRepository
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
@@ -43,6 +44,7 @@ class HomeViewModel @Inject constructor(
     private var capturing = false
     val imageAnalyzer: BirdRecognizerImageAnalyzer = BirdRecognizerImageAnalyzer(this)
     lateinit var cloudImagesRepository: CloudImagesRepository
+    private val imagesRepository = ImagesRepository()
 
 
     @Provides
@@ -74,13 +76,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun capture(label: String) {
-        val fileName = label + "_" + generateFileName(FILENAME, PHOTO_EXTENSION)
+        val fileName = label + "_" + ImagesRepository.generateFileName(ImagesRepository.FILENAME, ImagesRepository.PHOTO_EXTENSION)
         val newImageDetails = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 put(
                     MediaStore.Images.Media.RELATIVE_PATH,
-                    Environment.DIRECTORY_PICTURES + '/' + IMAGES_SUBDIRECTORY
+                    Environment.DIRECTORY_PICTURES + '/' + ImagesRepository.IMAGES_SUBDIRECTORY
                 )
             }
         }
@@ -96,9 +98,9 @@ class HomeViewModel @Inject constructor(
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     output.savedUri?.let {
-                        val filePath = getRealPathFromURI(it)
+                        val filePath = imagesRepository.getRealPathFromURI(contentResolver, it)
                         val file = File(filePath)
-                        cloudImagesRepository.uploadImage(file, IMAGES_SUBDIRECTORY, "image/jpeg")
+                        cloudImagesRepository.uploadImage(file, ImagesRepository.IMAGES_SUBDIRECTORY, "image/jpeg")
                     }
                     Log.d(TAG, "Photo capture succeeded")
                 }
@@ -109,31 +111,11 @@ class HomeViewModel @Inject constructor(
             })
     }
 
-    private fun getRealPathFromURI(contentURI: Uri): String? {
-        val result: String?
-        val cursor: Cursor? = contentResolver.query(contentURI, null, null, null, null)
-        if (cursor == null) {
-            result = contentURI.path
-        } else {
-            cursor.moveToFirst()
-            val idx: Int = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
-            result = cursor.getString(idx)
-            cursor.close()
-        }
-        return result
-    }
+
 
     companion object {
         private const val TAG = "HomeViewModel"
-        private const val FILENAME = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private const val PHOTO_EXTENSION = ".jpg"
-        private const val IMAGES_SUBDIRECTORY = "BirdPhotography"
 
-
-        private fun generateFileName(format: String, extension: String): String {
-            return SimpleDateFormat(format, Locale.GERMAN)
-                .format(System.currentTimeMillis()) + extension
-        }
 
     }
 
