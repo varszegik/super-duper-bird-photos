@@ -1,3 +1,9 @@
+# 7.hét
+
+### 2021.10.22
+
+Megcsináltam azt, hogy a drive egy BirdPhotography nevű mappába pakolja a képeket, és a logikát hozzá, hogy ha létezik a mappa, akkor használja, ha nem létezik, akkor pedig hozza létre
+
 # 6. hét
 
 ### 2021.10.18
