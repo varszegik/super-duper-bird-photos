@@ -15,6 +15,7 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
 import com.google.api.services.drive.model.FileList
 import android.R.attr.mimeType
+import android.util.Log
 
 import com.google.api.client.http.FileContent
 
@@ -41,11 +42,36 @@ class GoogleDriveRepository(context: Context) : CloudImagesRepository {
         }
     }
 
+    private fun listDirectories(): MutableList<File>? {
+            val result = googleDriveService.files().list()
+                .setQ("mimeType='application/vnd.google-apps.folder'")
+                .setSpaces("drive")
+                .setFields("nextPageToken, files(id,name)")
+                .setPageToken(null)
+                .execute()
+            val list = result.files
+            Log.d("GoogleDriveRepository", result.toString())
+        return list
+    }
+
+    private fun createFolder(folderName: String): String? {
+        val metadata = File()
+            .setParents(Collections.singletonList("root"))
+            .setMimeType("application/vnd.google-apps.folder")
+            .setName(folderName)
+        val googleFile: File = googleDriveService.files().create(metadata).execute()
+        return googleFile.id
+    }
+
 
     override fun uploadImage(file: java.io.File, folder: String, fileType: String) {
         if (googleSignInAccount != null) {
+            var birdPhotographyDirectoryId = listDirectories()?.find { it -> it.name == folder }?.id
+            if(birdPhotographyDirectoryId == null){
+                birdPhotographyDirectoryId = createFolder(folder)
+            }
             val metadata: File = File()
-                .setParents(Collections.singletonList("root"))
+                .setParents(Collections.singletonList(birdPhotographyDirectoryId))
                 .setMimeType(fileType)
                 .setName(file.name)
             val fileContent = FileContent(fileType, file)
