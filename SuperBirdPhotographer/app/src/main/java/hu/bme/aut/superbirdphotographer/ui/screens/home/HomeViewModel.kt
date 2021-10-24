@@ -2,6 +2,7 @@ package hu.bme.aut.superbirdphotographer.ui.screens.home
 
 import android.content.ContentResolver
 import android.content.ContentValues
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.graphics.Rect
 import android.net.Uri
@@ -45,6 +46,7 @@ class HomeViewModel @Inject constructor(
     val imageAnalyzer: BirdRecognizerImageAnalyzer = BirdRecognizerImageAnalyzer(this)
     lateinit var cloudImagesRepository: CloudImagesRepository
     private val imagesRepository = ImagesRepository()
+    var sharedPreferences: SharedPreferences? = null
 
 
     @Provides
@@ -67,7 +69,9 @@ class HomeViewModel @Inject constructor(
             if (!capturing) {
                 capturing = true
                 CoroutineScope(Dispatchers.IO).launch {
-                    delay(5000L)
+                    val shouldUploadToCloud: Float =
+                        sharedPreferences!!.getFloat("delay_between_images", 5f)*1000
+                    delay(shouldUploadToCloud.toLong())
                     capturing = false
                 }
                 capture(label)
@@ -76,7 +80,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun capture(label: String) {
-        val fileName = label + "_" + ImagesRepository.generateFileName(ImagesRepository.FILENAME, ImagesRepository.PHOTO_EXTENSION)
+        val fileName = label + "_" + ImagesRepository.generateFileName(
+            ImagesRepository.FILENAME,
+            ImagesRepository.PHOTO_EXTENSION
+        )
         val newImageDetails = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -100,7 +107,15 @@ class HomeViewModel @Inject constructor(
                     output.savedUri?.let {
                         val filePath = imagesRepository.getRealPathFromURI(contentResolver, it)
                         val file = File(filePath)
-                        cloudImagesRepository.uploadImage(file, ImagesRepository.IMAGES_SUBDIRECTORY, "image/jpeg")
+                        val shouldUploadToCloud: Boolean =
+                            sharedPreferences!!.getBoolean("should_upload_to_drive", true)
+                        if (shouldUploadToCloud) {
+                            cloudImagesRepository.uploadImage(
+                                file,
+                                ImagesRepository.IMAGES_SUBDIRECTORY,
+                                "image/jpeg"
+                            )
+                        }
                     }
                     Log.d(TAG, "Photo capture succeeded")
                 }
@@ -110,7 +125,6 @@ class HomeViewModel @Inject constructor(
                 }
             })
     }
-
 
 
     companion object {

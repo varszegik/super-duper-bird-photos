@@ -37,6 +37,8 @@ fun Images(
     navigateToImageScreen: (imageUri: String?) -> Unit
 ) {
     val context = LocalContext.current
+    viewModel.sharedPreferences = context.getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
+    val shouldGroupImages = viewModel.sharedPreferences!!.getBoolean("should_group_images", true)
     val images = viewModel.listImages(context.contentResolver)
     Scaffold(
         topBar = {
@@ -56,16 +58,19 @@ fun Images(
     {
         LazyColumn(modifier = Modifier.fillMaxSize(), content = {
             images.forEach { (date, list) ->
-                stickyHeader {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(0.dp)
-                            .background(MaterialTheme.colors.surface),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text(SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.GERMAN).format(date))
+                if (shouldGroupImages) {
+                    stickyHeader {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(0.dp)
+                                .background(MaterialTheme.colors.surface),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Text(SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.GERMAN).format(date))
+                        }
                     }
+
                 }
                 items(list) { image ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -78,7 +83,14 @@ fun Images(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(0.dp, 10.dp)
-                                .clickable { navigateToImageScreen(URLEncoder.encode(image.contentUri.toString(), StandardCharsets.UTF_8.toString())) },
+                                .clickable {
+                                    navigateToImageScreen(
+                                        URLEncoder.encode(
+                                            image.contentUri.toString(),
+                                            StandardCharsets.UTF_8.toString()
+                                        )
+                                    )
+                                },
                             horizontalArrangement = Arrangement.Start,
                             verticalAlignment = Alignment.CenterVertically,
 
@@ -102,25 +114,5 @@ fun Images(
 
         })
 
-    }
-}
-
-@ExperimentalFoundationApi
-@Composable
-fun DetectionGroup(context: Context, date: Date?, images: List<MediaStoreImage>) {
-    LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 128.dp)) {
-        items(images) { image ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val thumbnail =
-                    context.contentResolver.loadThumbnail(image.contentUri, Size(320, 320), null)
-
-                Image(
-                    BitmapPainter(thumbnail.asImageBitmap()), "image", modifier = Modifier
-                        .width(128.dp)
-                        .height(128.dp)
-                        .padding(5.dp), contentScale = ContentScale.Crop
-                )
-            }
-        }
     }
 }

@@ -1,6 +1,5 @@
 package hu.bme.aut.superbirdphotographer.data.cloud
 
-import android.R.attr
 import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -13,8 +12,6 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
-import com.google.api.services.drive.model.FileList
-import android.R.attr.mimeType
 import android.util.Log
 
 import com.google.api.client.http.FileContent

@@ -2,8 +2,10 @@ package hu.bme.aut.superbirdphotographer.ui.screens.home
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.graphics.Rect
 import android.os.Environment
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
@@ -59,6 +61,7 @@ fun Home(
         context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) ?: context.filesDir
     viewModel.contentResolver = context.contentResolver
     viewModel.cloudImagesRepository = GoogleDriveRepository(context)
+    viewModel.sharedPreferences = context.getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
     Scaffold(
         topBar = {
             TopAppBar(

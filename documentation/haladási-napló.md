@@ -4,6 +4,12 @@
 
 Megcsináltam azt, hogy a drive egy BirdPhotography nevű mappába pakolja a képeket, és a logikát hozzá, hogy ha létezik a mappa, akkor használja, ha nem létezik, akkor pedig hozza létre
 
+### 2021.10.24.
+
+A héten szerettem volna megcsinálni az értesítéseket, viszont a Drive API-ban és az új Android verziókban nem találtam meg a megfelelő lehetőséget erre. Ezért inkább a beállításokkal foglalkoztam, melyre ezt a libraryt tudtam felhasználni: https://github.com/alorma/Compose-Settings
+Sajnos még nincs benne jó lehetőség számok bevitelére, de a következő verzióban úgy látom, hogy már lesz.
+Mindenesetre könnyű vele kezelni a SharedPreferencest, és jól működik.
+
 # 6. hét
 
 ### 2021.10.18

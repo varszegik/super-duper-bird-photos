@@ -1,6 +1,7 @@
 package hu.bme.aut.superbirdphotographer.ui.screens.images
 
 import android.content.ContentResolver
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,7 +17,7 @@ import javax.inject.Inject
 @InstallIn(ViewModelComponent::class)
 class ImagesViewModel @Inject constructor() : ViewModel() {
     private val imagesRepository = ImagesRepository()
-
+    var sharedPreferences: SharedPreferences? = null
 
     fun listImages(contentResolver: ContentResolver): Map<Date?, List<MediaStoreImage>> {
         val images = imagesRepository.getLocalImages(contentResolver).asReversed()
@@ -31,7 +32,8 @@ class ImagesViewModel @Inject constructor() : ViewModel() {
             calendar.time = date
 
             val unroundedMinutes = calendar[Calendar.MINUTE]
-            val mod = unroundedMinutes % 5
+            val groupImagesIn = sharedPreferences!!.getFloat("group_images_in", 5f)
+            val mod = unroundedMinutes % groupImagesIn.toInt()
             calendar.add(Calendar.MINUTE, -mod)
             calendar.set(Calendar.SECOND, 0);
             calendar.set(Calendar.MILLISECOND, 0);
