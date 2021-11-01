@@ -1,3 +1,10 @@
+# 8.hét
+
+### 2021.10.31.
+
+A héten az észlelés során érkező értesítéssel foglalkoztam. Első terv az volt, hogy a drive changes/watch API-jával feliratkozok a változásokra a mappában. Ez sajnos nem arra való, ő egy domainre tud visszahívni, amivel tud értesíteni. Persze ez a domain lehetett volna egy AWS Lambda, és úgy küldeni értesítést de:
+mint kiderült a changes/list API használatából, hogy ez egyáltalán nem listázza az új fájlokat. Az új fájlokat sikerült listázni egy egyszerű files/list és createdTime DESC rendezéssel. Felmerült ekkor a kérdés, hogy milyen Android API-val lenne érdemes pollozni (JobScheduler, AlarmManager, WorkManager), de egyiket sem találtam megfelelőnek, ugyanis pontatlanul futnak, és nem is árulják el, mikor futottak legutoljára. Továbbá a dokumentációban kiemelve volt egy felhívás, hogy ha szerverről adatokat akarunk pollozni, akkor inkább ne tegyük, hanem használjunk Firebase Cloud Messaging-et. Az FCM-nek utánajárva viszonylag könnyedén tudtam már értesítéseket küldeni a Firebase webes felületéről, viszont másik telefonról egy fokkal nehezebb volt: REST apin keresztül kell, viszont nem biztos, hogy jó ötlet egy Android alkalmazásba a Credentialjeim belecsomagolni. Így csináltam egy AWS Lambdát, amit meg tud hívni az App, és a Lambad tovább tudja hívni az FCM Rest Apiját. Ez persze csak egy odébb helyezése a problémának, ugyanis még mindig szabadon elérhető egy endpoint, ami értesítéseket küld. Azonban egy köztes réteggel már könnyedén megvalósítható lenne egy ellenőrzés, hogy a felhasználó, aki meghívta, be van e lépve a Google fiókjába, és csak ekkor engedni. Az egyetlen hátramaradt probléma: nincs két telefonom, amin van Google szolgáltatás.
+
 # 7.hét
 
 ### 2021.10.22
