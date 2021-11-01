@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "312639196088",
+    "project_id": "bird-photographer",
+    "storage_bucket": "bird-photographer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312639196088:android:74d90e9eb4566aaf9c1d4d",
+        "android_client_info": {
+          "package_name": "hu.bme.aut.superbirdphotographer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "312639196088-0g4mphns7kqpe1s7i9p5kbn3pqf583s5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-8O0mZJPfY7qD36CP-0DT2iAQKcrzWVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "312639196088-0g4mphns7kqpe1s7i9p5kbn3pqf583s5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

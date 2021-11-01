@@ -1,6 +1,8 @@
 package hu.bme.aut.superbirdphotographer.data.cloud
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.Scopes
@@ -15,9 +17,11 @@ import com.google.api.services.drive.model.File
 import android.util.Log
 
 import com.google.api.client.http.FileContent
-
-
-
+import okhttp3.MediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import java.util.concurrent.Executors
 
 
 class GoogleDriveRepository(context: Context) : CloudImagesRepository {
@@ -28,8 +32,9 @@ class GoogleDriveRepository(context: Context) : CloudImagesRepository {
         context, Collections.singleton(Scopes.DRIVE_FILE)
     )
     private lateinit var googleDriveService: Drive
+
     init {
-        if(googleSignInAccount != null){
+        if (googleSignInAccount != null) {
             credential.selectedAccount = googleSignInAccount.account
             googleDriveService = Drive.Builder(
                 AndroidHttp.newCompatibleTransport(),
@@ -40,14 +45,14 @@ class GoogleDriveRepository(context: Context) : CloudImagesRepository {
     }
 
     private fun listDirectories(): MutableList<File>? {
-            val result = googleDriveService.files().list()
-                .setQ("mimeType='application/vnd.google-apps.folder'")
-                .setSpaces("drive")
-                .setFields("nextPageToken, files(id,name)")
-                .setPageToken(null)
-                .execute()
-            val list = result.files
-            Log.d("GoogleDriveRepository", result.toString())
+        val result = googleDriveService.files().list()
+            .setQ("mimeType='application/vnd.google-apps.folder'")
+            .setSpaces("drive")
+            .setFields("nextPageToken, files(id,name)")
+            .setPageToken(null)
+            .execute()
+        val list = result.files
+        Log.d("GoogleDriveRepository", result.toString())
         return list
     }
 
@@ -64,7 +69,7 @@ class GoogleDriveRepository(context: Context) : CloudImagesRepository {
     override fun uploadImage(file: java.io.File, folder: String, fileType: String) {
         if (googleSignInAccount != null) {
             var birdPhotographyDirectoryId = listDirectories()?.find { it -> it.name == folder }?.id
-            if(birdPhotographyDirectoryId == null){
+            if (birdPhotographyDirectoryId == null) {
                 birdPhotographyDirectoryId = createFolder(folder)
             }
             val metadata: File = File()
@@ -73,6 +78,24 @@ class GoogleDriveRepository(context: Context) : CloudImagesRepository {
                 .setName(file.name)
             val fileContent = FileContent(fileType, file)
             googleDriveService.files().create(metadata, fileContent).execute()
+        }
+    }
+
+
+    override fun sendNotification(label: String) {
+        if (googleSignInAccount == null) {
+            return
+        }
+        val executor = Executors.newSingleThreadExecutor()
+        executor.execute {
+            val url = "https://u1vq4cdfxf.execute-api.eu-central-1.amazonaws.com/default/birb"
+            val client = OkHttpClient()
+            val body: RequestBody = RequestBody.create(
+                MediaType.parse("application/json; charset=utf-8"),
+                "{\"topic\": \"${googleSignInAccount.id}\", \"species\": \"$label\"}"
+            )
+            val request = Request.Builder().url(url).post(body).build()
+            client.newCall(request).execute().body().string()
         }
     }
 }

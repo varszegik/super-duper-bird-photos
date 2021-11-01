@@ -58,6 +58,8 @@ android {
     }
 }
 
+apply plugin: 'com.google.gms.google-services'
+
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.6.0'
@@ -105,7 +107,9 @@ dependencies {
     }
     implementation "com.github.alorma:compose-settings-ui:0.6.0"
     implementation "com.github.alorma:compose-settings-storage-preferences:0.6.0"
-
+    implementation platform('com.google.firebase:firebase-bom:28.4.2')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 
 }
 

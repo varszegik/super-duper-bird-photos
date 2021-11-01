@@ -3,19 +3,13 @@ package hu.bme.aut.superbirdphotographer.ui.screens.home
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.graphics.Rect
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.core.net.toFile
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.Module
@@ -26,14 +20,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.bme.aut.superbirdphotographer.data.birddetector.BirdInfoScreen
 import hu.bme.aut.superbirdphotographer.data.birddetector.BirdRecognizerImageAnalyzer
 import hu.bme.aut.superbirdphotographer.data.cloud.CloudImagesRepository
-import hu.bme.aut.superbirdphotographer.data.cloud.GoogleDriveRepository
 import hu.bme.aut.superbirdphotographer.data.local.ImagesRepository
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 @HiltViewModel
@@ -69,9 +60,9 @@ class HomeViewModel @Inject constructor(
             if (!capturing) {
                 capturing = true
                 CoroutineScope(Dispatchers.IO).launch {
-                    val shouldUploadToCloud: Float =
+                    val delay: Float =
                         sharedPreferences!!.getFloat("delay_between_images", 5f)*1000
-                    delay(shouldUploadToCloud.toLong())
+                    delay(delay.toLong())
                     capturing = false
                 }
                 capture(label)
@@ -116,6 +107,7 @@ class HomeViewModel @Inject constructor(
                                 "image/jpeg"
                             )
                         }
+                        cloudImagesRepository.sendNotification(label)
                     }
                     Log.d(TAG, "Photo capture succeeded")
                 }

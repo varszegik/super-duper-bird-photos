@@ -112,9 +112,6 @@ fun LoginButton(
     }
 }
 
-fun LaunchSignInActivity() {
-
-}
 
 
 @ExperimentalMaterialApi
