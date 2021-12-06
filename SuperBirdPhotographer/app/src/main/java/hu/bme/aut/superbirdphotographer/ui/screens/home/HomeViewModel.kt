@@ -22,9 +22,9 @@ import hu.bme.aut.superbirdphotographer.data.birddetector.BirdRecognizerImageAna
 import hu.bme.aut.superbirdphotographer.data.cloud.CloudImagesRepository
 import hu.bme.aut.superbirdphotographer.data.local.ImagesRepository
 import kotlinx.coroutines.*
+import java.io.File
 import java.util.concurrent.Executors
 import javax.inject.Inject
-import java.io.File
 
 
 @HiltViewModel

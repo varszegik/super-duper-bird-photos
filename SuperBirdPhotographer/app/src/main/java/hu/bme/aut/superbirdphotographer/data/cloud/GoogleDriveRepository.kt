@@ -1,26 +1,21 @@
 package hu.bme.aut.superbirdphotographer.data.cloud
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.Scopes
-
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import java.util.*
-import com.google.api.client.json.gson.GsonFactory
-
 import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.http.FileContent
+import com.google.api.client.json.gson.GsonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.model.File
-import android.util.Log
-
-import com.google.api.client.http.FileContent
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import java.util.*
 import java.util.concurrent.Executors
 
 

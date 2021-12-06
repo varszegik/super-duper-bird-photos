@@ -6,21 +6,20 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import hu.bme.aut.superbirdphotographer.ui.screens.login.Authentication
 import hu.bme.aut.superbirdphotographer.ui.screens.home.Home
-import hu.bme.aut.superbirdphotographer.ui.screens.home.HomeViewModel
+import hu.bme.aut.superbirdphotographer.ui.screens.image.ImageScreen
 import hu.bme.aut.superbirdphotographer.ui.screens.images.Images
+import hu.bme.aut.superbirdphotographer.ui.screens.login.Authentication
 import hu.bme.aut.superbirdphotographer.ui.screens.settings.Settings
 import kotlinx.coroutines.launch
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
-import hu.bme.aut.superbirdphotographer.ui.screens.image.ImageScreen
 
 @ExperimentalFoundationApi
 @ExperimentalPermissionsApi

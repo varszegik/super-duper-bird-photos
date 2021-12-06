@@ -6,13 +6,9 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.provider.MediaStore.Images.Media.query
-import android.provider.MediaStore.Images.Thumbnails.query
-import android.provider.MediaStore.Video.query
 import androidx.recyclerview.widget.DiffUtil
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 data class MediaStoreImage(
     val id: Long,

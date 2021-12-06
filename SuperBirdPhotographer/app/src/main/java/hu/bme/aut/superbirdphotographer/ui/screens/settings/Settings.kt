@@ -1,13 +1,14 @@
 package hu.bme.aut.superbirdphotographer.ui.screens.settings
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.alorma.settings.composables.*
+import com.alorma.settings.composables.SettingsCheckbox
+import com.alorma.settings.composables.SettingsGroup
+import com.alorma.settings.composables.SettingsSlider
 import com.alorma.settings.storage.preferences.rememberPreferenceBooleanSettingState
 import com.alorma.settings.storage.preferences.rememberPreferenceFloatSettingState
 
