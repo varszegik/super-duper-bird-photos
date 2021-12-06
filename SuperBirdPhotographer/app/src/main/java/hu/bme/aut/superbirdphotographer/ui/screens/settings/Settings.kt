@@ -14,7 +14,6 @@ import com.alorma.settings.storage.preferences.rememberPreferenceFloatSettingSta
 
 @Composable
 fun Settings(openDrawer: () -> Unit) {
-    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
