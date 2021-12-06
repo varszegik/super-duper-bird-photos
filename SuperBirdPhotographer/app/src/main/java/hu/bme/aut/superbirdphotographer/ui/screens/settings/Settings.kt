@@ -5,7 +5,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import com.alorma.settings.composables.SettingsCheckbox
 import com.alorma.settings.composables.SettingsGroup
 import com.alorma.settings.composables.SettingsSlider
