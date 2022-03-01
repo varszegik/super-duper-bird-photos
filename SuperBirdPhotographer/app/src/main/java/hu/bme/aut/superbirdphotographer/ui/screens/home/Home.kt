@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.res.painterResource
 import hu.bme.aut.superbirdphotographer.R
+import hu.bme.aut.superbirdphotographer.data.birddetector.BirdRecognizerImageAnalyzer
 import hu.bme.aut.superbirdphotographer.data.cloud.GoogleDriveRepository
 import android.util.Size as DetectionSize
 
@@ -57,6 +58,7 @@ fun Home(
     viewModel.contentResolver = context.contentResolver
     viewModel.cloudImagesRepository = GoogleDriveRepository(context)
     viewModel.sharedPreferences = context.getSharedPreferences(context.packageName + "_preferences", Context.MODE_PRIVATE)
+    viewModel.imageAnalyzer = BirdRecognizerImageAnalyzer(viewModel, context)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -139,6 +141,7 @@ fun CameraView(
 
                 val imageAnalysis = ImageAnalysis.Builder()
                     .setTargetResolution(DetectionSize(480, 360))
+                    .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_YUV_420_888)
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
                 imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(context), analyser)

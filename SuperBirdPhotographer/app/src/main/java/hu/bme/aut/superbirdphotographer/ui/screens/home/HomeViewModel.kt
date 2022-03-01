@@ -34,7 +34,7 @@ class HomeViewModel @Inject constructor(
 
 ) : ViewModel(), BirdInfoScreen {
     private var capturing = false
-    val imageAnalyzer: BirdRecognizerImageAnalyzer = BirdRecognizerImageAnalyzer(this)
+    lateinit var imageAnalyzer: BirdRecognizerImageAnalyzer
     lateinit var cloudImagesRepository: CloudImagesRepository
     private val imagesRepository = ImagesRepository()
     var sharedPreferences: SharedPreferences? = null
